@@ -1,14 +1,11 @@
 package com.example.produtivoBackend.domain.tasks;
 
+import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
 import com.example.produtivoBackend.domain.users.Users;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Table(name = "tasks")
 @Entity
@@ -18,31 +15,51 @@ import java.util.UUID;
 @Setter
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users users;
+
     private String title;
+
     private String description;
+
     @Enumerated(EnumType.STRING)
     private CategoryTask category;
+
     @Enumerated(EnumType.STRING)
-    private StatusTask status_task;
-    private LocalDateTime expiration_date;
-    private LocalDateTime created_in = LocalDateTime.now();
+    @Column(name = "statusTask")
+    private StatusTask statusTask;
+
+    @Column(name = "expiration_date")
+    private LocalDateTime expirationDate;
+
+    @Column(name = "created_in")
+    private LocalDateTime createdIn;
+
     private boolean recurrent;
 
-
-    public Task(Users users, String title, String description, CategoryTask category, StatusTask status_task, LocalDateTime expiration_date,boolean recurrent) {
+    public Task(Users users, String title, String description, CategoryTask category, StatusTask statusTask, LocalDateTime expirationDate,boolean recurrent) {
         this.users = users;
         this.title = title;
         this.description = description;
         this.category = category;
-        this.status_task = status_task;
-        this.created_in = LocalDateTime.now();
-        this.expiration_date = expiration_date;
+        this.statusTask = statusTask;
+        this.createdIn = LocalDateTime.now();
+        this.expirationDate = expirationDate;
         this.recurrent = recurrent;
     }
+
+    public Task( Users user,TaskRequest request){
+        this.users = user;
+        this.title = request.title();
+        this.description = request.description();
+        this.category = request.category();
+        this.statusTask = request.statusTask();
+        this.expirationDate = request.expirationDate();
+        this.recurrent = request.recurrent();
+    }
+
 }

@@ -14,11 +14,4 @@ public enum StatusTask {
     StatusTask(String label){
         this.label = label;
     }
-
-
-
-//    public boolean calculeOverdue(Task task){
-//        return task.getExpirationDate().isAfter(LocalDateTime.now()) &&
-//                !task.isCompleted();
-//    } //TESTAR(URGENTE)
 }
