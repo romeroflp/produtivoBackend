@@ -1,4 +1,4 @@
-package com.example.produtivoBackend.domain.tasks;
+package com.example.produtivoBackend.domain.tasks.enums;
 
 import lombok.Getter;
 

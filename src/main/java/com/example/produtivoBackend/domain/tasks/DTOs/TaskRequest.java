@@ -1,9 +1,7 @@
 package com.example.produtivoBackend.domain.tasks.DTOs;
 
-import com.example.produtivoBackend.domain.tasks.CategoryTask;
-import com.example.produtivoBackend.domain.tasks.StatusTask;
-import com.example.produtivoBackend.domain.tasks.Task;
-import com.example.produtivoBackend.domain.users.Users;
+import com.example.produtivoBackend.domain.tasks.enums.CategoryTask;
+import com.example.produtivoBackend.domain.tasks.enums.StatusTask;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -16,10 +14,9 @@ public record TaskRequest(UUID userId,
                           String description,
                           @NotNull
                           CategoryTask category,
-                          @NotNull
                           StatusTask statusTask,
                           LocalDateTime expirationDate,
-                          boolean recurrent) {
+                          Boolean recurrent) {
 
 
 

@@ -1,6 +1,8 @@
 package com.example.produtivoBackend.domain.tasks;
 
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
+import com.example.produtivoBackend.domain.tasks.enums.CategoryTask;
+import com.example.produtivoBackend.domain.tasks.enums.StatusTask;
 import com.example.produtivoBackend.domain.users.Users;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +33,7 @@ public class Task {
     private CategoryTask category;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "statusTask")
+    @Column(name = "status_task")
     private StatusTask statusTask;
 
     @Column(name = "expiration_date")
@@ -39,9 +42,9 @@ public class Task {
     @Column(name = "created_in")
     private LocalDateTime createdIn;
 
-    private boolean recurrent;
+    private Boolean recurrent;
 
-    public Task(Users users, String title, String description, CategoryTask category, StatusTask statusTask, LocalDateTime expirationDate,boolean recurrent) {
+    public Task(Users users, String title, String description, CategoryTask category, StatusTask statusTask, LocalDateTime expirationDate,Boolean recurrent) {
         this.users = users;
         this.title = title;
         this.description = description;

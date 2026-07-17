@@ -1,23 +1,24 @@
 package com.example.produtivoBackend.controllers;
 
-
+import com.example.produtivoBackend.domain.tasks.DTOs.TaskFilter;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskResponse;
-import com.example.produtivoBackend.domain.tasks.Task;
-import com.example.produtivoBackend.services.TaskService;
+import com.example.produtivoBackend.domain.tasks.taskService.TaskService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/task")
 public class TaskController{
+
     @Autowired
     private TaskService taskService;
 
@@ -34,8 +35,8 @@ public class TaskController{
     }
 
     @GetMapping("/allTasks")
-    public ResponseEntity<List<TaskResponse>> allTasks(){
-        return ResponseEntity.ok(taskService.allTasks());
+    public ResponseEntity<Page<TaskResponse>> allTasks(Pageable pageable) {
+        return ResponseEntity.ok(taskService.allTasks(pageable));
     }
 
     @DeleteMapping("/delete/{idTask}")
@@ -44,13 +45,14 @@ public class TaskController{
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/alterTask/{idTask}")
-    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long idTask,@RequestBody @Valid TaskRequest request){
-        return ResponseEntity.ok(taskService.updateTask(idTask, request));
+    @PatchMapping("/alterTask/{id}")
+    public ResponseEntity<TaskResponse> updateTask(@PathVariable long id ,@RequestBody @Valid TaskRequest request){
+        return ResponseEntity.ok(taskService.updateTask(id ,request));
     }
 
-    public ResponseEntity<TaskResponse> filterTask(@RequestParam TaskRequest request){
-
+    @GetMapping("/fillTasks")
+    public ResponseEntity<List<TaskResponse>> searchFilterTask(TaskFilter filter){
+        return ResponseEntity.ok(taskService.filterTask(filter));
 
     }
 }
