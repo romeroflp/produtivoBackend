@@ -1,4 +1,4 @@
-package com.example.produtivoBackend.domain.tasks;
+package com.example.produtivoBackend.domain.tasks.enums;
 
 import lombok.Getter;
 
@@ -7,7 +7,8 @@ public enum StatusTask {
     IN_PROGRESS("EM PROGRESSO"),
     PENDING("PENDENTE"),
     COMPLETED("COMPLETO"),
-    OVERDUE("ATRASADO");
+    OVERDUE("ATRASADO"),
+    CANCELED("CANCELADO");
 
     private final String label;
 
