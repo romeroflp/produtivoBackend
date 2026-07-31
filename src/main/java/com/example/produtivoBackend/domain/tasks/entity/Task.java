@@ -1,9 +1,9 @@
-package com.example.produtivoBackend.domain.tasks;
+package com.example.produtivoBackend.domain.tasks.entity;
 
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
 import com.example.produtivoBackend.domain.tasks.enums.CategoryTask;
 import com.example.produtivoBackend.domain.tasks.enums.StatusTask;
-import com.example.produtivoBackend.domain.users.Users;
+import com.example.produtivoBackend.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,8 +1,6 @@
-package com.example.produtivoBackend.domain.users;
+package com.example.produtivoBackend.domain.users.entity;
 
-import com.example.produtivoBackend.domain.tasks.Task;
 import com.example.produtivoBackend.domain.users.DTOs.UserRequestDTO;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -57,23 +55,5 @@ public class Users implements UserDetails {
         return email;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
 }

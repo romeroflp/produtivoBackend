@@ -2,7 +2,7 @@ package com.example.produtivoBackend.repository;
 
 import com.example.produtivoBackend.domain.tasks.enums.CategoryTask;
 import com.example.produtivoBackend.domain.tasks.enums.StatusTask;
-import com.example.produtivoBackend.domain.tasks.Task;
+import com.example.produtivoBackend.domain.tasks.entity.Task;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;

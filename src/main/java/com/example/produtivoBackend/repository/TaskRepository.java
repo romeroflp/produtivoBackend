@@ -1,6 +1,6 @@
 package com.example.produtivoBackend.repository;
 
-import com.example.produtivoBackend.domain.tasks.Task;
+import com.example.produtivoBackend.domain.tasks.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;

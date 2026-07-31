@@ -1,6 +1,6 @@
 package com.example.produtivoBackend.domain.users.DTOs;
 
-import com.example.produtivoBackend.domain.users.Users;
+import com.example.produtivoBackend.domain.users.entity.Users;
 
 import java.util.UUID;
 

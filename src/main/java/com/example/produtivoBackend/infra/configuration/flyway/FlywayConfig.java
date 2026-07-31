@@ -1,4 +1,4 @@
-package com.example.produtivoBackend.configuration.flyway;
+package com.example.produtivoBackend.infra.configuration.flyway;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.Bean;
