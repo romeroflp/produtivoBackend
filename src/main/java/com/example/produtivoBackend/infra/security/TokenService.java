@@ -4,13 +4,17 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.example.produtivoBackend.domain.users.entity.Users;
+import com.example.produtivoBackend.domain.exceptions.domainExceptions.ExpiredOrInvalidTokenException;
+import com.example.produtivoBackend.domain.users.entities.Users;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+@Slf4j
 @Service
 public class TokenService {
     @Value("${api.security.token.secret}")
@@ -26,11 +30,11 @@ public class TokenService {
                     .sign(algorithm);
 
         }catch (JWTCreationException e){
-            throw new RuntimeException("Erro ao gerar token", e);
+            throw new RuntimeException("Erro ao gerar token de autorização", e);
         }
     }
 
-    public String validateToken(String token){ //Qual o retorno disso?
+    public String validateToken(String token){
           try{
               Algorithm algorithm = Algorithm.HMAC256(secretKey);
               return JWT.require(algorithm)
@@ -39,14 +43,13 @@ public class TokenService {
                       .verify(token)
                       .getSubject();
           }catch (JWTVerificationException e){
-              throw new RuntimeException("Token inválido.", e);
+              throw new ExpiredOrInvalidTokenException();
           }
     }
 
     private Instant genInstantExpiresToken(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusHours(4).toInstant(ZoneOffset.of("-03:00"));
     }
-
 
 }
 
