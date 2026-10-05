@@ -1,0 +1,1 @@
+ALTER TABLE reset_token DROP CONSTRAINT reset_token_user_id_fkey;
