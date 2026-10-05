@@ -2,7 +2,9 @@ package com.example.produtivoBackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
+@ConfigurationPropertiesScan
 @SpringBootApplication
 public class ProdutivoBackendApplication {
 	public static void main(String[] args) {
@@ -10,10 +12,6 @@ public class ProdutivoBackendApplication {
 	}
 }
 
-
-//Ver pra que serve aquele auth no securityFilter
-// Escrever sobre UsarnamePassToken e filter, e AuthenticationManager
-//Perguntar a IA os problemas não implementar uma api completamente stateless
-
-//Relembrar programação orientada a interfaces
-//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
+// Coloco o properties do Brevo separado dos Beans??
+// Sempre que eu quiser injetar uma dependencia, todas as intancias dentro da camada de configuração vão ser
+// gerenciadas pelo container do spring. Se eu fizer isso varias vezes, tem algum impacto???
