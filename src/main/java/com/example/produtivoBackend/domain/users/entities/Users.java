@@ -1,4 +1,4 @@
-package com.example.produtivoBackend.domain.users.entity;
+package com.example.produtivoBackend.domain.users.entities;
 
 import com.example.produtivoBackend.domain.users.DTOs.UserRequestDTO;
 import jakarta.persistence.*;
