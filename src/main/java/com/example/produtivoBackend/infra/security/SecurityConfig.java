@@ -36,6 +36,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user/allUsers").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/mail/forgotPassword").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/resetPassword/validate").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/resetPassword/confirm").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

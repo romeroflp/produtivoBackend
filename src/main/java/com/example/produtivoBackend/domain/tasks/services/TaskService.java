@@ -1,17 +1,21 @@
-package com.example.produtivoBackend.domain.tasks.taskService;
+package com.example.produtivoBackend.domain.tasks.services;
 
+import com.example.produtivoBackend.domain.exceptions.domainExceptions.TaskNotExistOrInvalidException;
+import com.example.produtivoBackend.domain.exceptions.domainExceptions.UserAlreadyExistOrInvalidException;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskFilter;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskResponse;
 import com.example.produtivoBackend.domain.tasks.entity.Task;
-import com.example.produtivoBackend.domain.users.entity.Users;
-import com.example.produtivoBackend.repository.SpecificationTask;
-import com.example.produtivoBackend.repository.TaskRepository;
-import com.example.produtivoBackend.repository.UserRepository;
+import com.example.produtivoBackend.domain.users.entities.Users;
+import com.example.produtivoBackend.infra.repository.SpecificationTask;
+import com.example.produtivoBackend.infra.repository.TaskRepository;
+import com.example.produtivoBackend.infra.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,26 +23,21 @@ import java.util.List;
 @Service
 public class TaskService{
 
-    private final TaskRepository taskRepo;
-    private final UserRepository userRepo;
+    @Autowired
+    private TaskRepository taskRepo;
+    @Autowired
+    private UserRepository userRepo;
 
-    public TaskService(TaskRepository taskRepo, UserRepository userRepo){
-        this.userRepo = userRepo;
-        this.taskRepo = taskRepo;
-
-    }
-
-    public TaskResponse createTask(TaskRequest taskRequest){
-
-        Users user = userRepo.findById(taskRequest.userId())
-                .orElseThrow(RuntimeException::new);
+    public TaskResponse createTask(TaskRequest taskRequest, Authentication token){
+        String email = token.getName();
+        Users user = userRepo.findByEmail(email);
         Task task = taskRepo.save(new Task(user, taskRequest));
 
         return new TaskResponse(task);
     }
 
     public TaskResponse searchTask(Long idTask){
-        return new TaskResponse(taskRepo.getReferenceById(idTask));
+        return new TaskResponse(taskRepo.findById(idTask).orElseThrow(TaskNotExistOrInvalidException::new));
     }
 
     public Page<TaskResponse> allTasks(Pageable pageable){
@@ -52,7 +51,7 @@ public class TaskService{
     public TaskResponse updateTask(long id,TaskRequest request){
 
         Task task = taskRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Essa task não existe."));
+                .orElseThrow(TaskNotExistOrInvalidException::new);
 
         BeanUtils.copyProperties(request, task);
         return new TaskResponse(taskRepo.save(task));

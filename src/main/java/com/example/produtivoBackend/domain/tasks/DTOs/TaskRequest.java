@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record TaskRequest(UUID userId,
+public record TaskRequest(
                           @NotBlank
                           String title,
                           String description,

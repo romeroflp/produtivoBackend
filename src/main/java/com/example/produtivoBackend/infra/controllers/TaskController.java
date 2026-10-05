@@ -1,9 +1,9 @@
-package com.example.produtivoBackend.controllers;
+package com.example.produtivoBackend.infra.controllers;
 
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskFilter;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskResponse;
-import com.example.produtivoBackend.domain.tasks.taskService.TaskService;
+import com.example.produtivoBackend.domain.tasks.services.TaskService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +11,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/task")
+@RequestMapping("/api/task")
 public class TaskController{
 
     @Autowired
     private TaskService taskService;
 
     @PostMapping("/save")
-    public ResponseEntity<TaskResponse> createTask(@RequestBody @Valid TaskRequest taskRequest){
-        TaskResponse response = taskService.createTask(taskRequest);
+    public ResponseEntity<TaskResponse> createTask(@RequestBody @Valid TaskRequest taskRequest, Authentication token){
+        TaskResponse response = taskService.createTask(taskRequest, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

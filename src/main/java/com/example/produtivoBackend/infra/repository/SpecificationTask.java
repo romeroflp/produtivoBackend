@@ -1,4 +1,4 @@
-package com.example.produtivoBackend.repository;
+package com.example.produtivoBackend.infra.repository;
 
 import com.example.produtivoBackend.domain.tasks.enums.CategoryTask;
 import com.example.produtivoBackend.domain.tasks.enums.StatusTask;

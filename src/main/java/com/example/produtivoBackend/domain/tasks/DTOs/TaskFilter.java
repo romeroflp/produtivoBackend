@@ -13,5 +13,5 @@ public record TaskFilter(String title,
                          LocalTime expirationTime,
                          Boolean recurrent) {
 
-//Filtro por expirationDate(tarefas que estão proximas de expirar)
+
 }
