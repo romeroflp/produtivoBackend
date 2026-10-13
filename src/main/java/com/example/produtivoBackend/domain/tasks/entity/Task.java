@@ -1,7 +1,6 @@
 package com.example.produtivoBackend.domain.tasks.entity;
 
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
-import com.example.produtivoBackend.domain.tasks.enums.CategoryTask;
 import com.example.produtivoBackend.domain.tasks.enums.StatusTask;
 import com.example.produtivoBackend.domain.users.entities.Users;
 import jakarta.persistence.*;
@@ -21,16 +20,17 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "userId")
     private Users users;
 
     private String title;
 
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private CategoryTask category;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_task")
@@ -44,7 +44,7 @@ public class Task {
 
     private Boolean recurrent;
 
-    public Task(Users users, String title, String description, CategoryTask category, StatusTask statusTask, LocalDateTime expirationDate,Boolean recurrent) {
+    public Task(Users users, String title, String description, Category category, StatusTask statusTask, LocalDateTime expirationDate, Boolean recurrent) {
         this.users = users;
         this.title = title;
         this.description = description;
@@ -55,12 +55,13 @@ public class Task {
         this.recurrent = recurrent;
     }
 
-    public Task( Users user,TaskRequest request){
+    public Task( Users user,TaskRequest request, Category category){
         this.users = user;
         this.title = request.title();
         this.description = request.description();
-        this.category = request.category();
+        this.category = category;
         this.statusTask = request.statusTask();
+        this.createdIn = LocalDateTime.now();
         this.expirationDate = request.expirationDate();
         this.recurrent = request.recurrent();
     }

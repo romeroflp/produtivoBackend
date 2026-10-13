@@ -1,12 +1,15 @@
 package com.example.produtivoBackend.domain.tasks.services;
 
+import com.example.produtivoBackend.domain.exceptions.domainExceptions.CategoryNotExistException;
 import com.example.produtivoBackend.domain.exceptions.domainExceptions.TaskNotExistOrInvalidException;
-import com.example.produtivoBackend.domain.exceptions.domainExceptions.UserAlreadyExistOrInvalidException;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskFilter;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskResponse;
+import com.example.produtivoBackend.domain.tasks.DTOs.TaskSelectAllDataDTO;
+import com.example.produtivoBackend.domain.tasks.entity.Category;
 import com.example.produtivoBackend.domain.tasks.entity.Task;
 import com.example.produtivoBackend.domain.users.entities.Users;
+import com.example.produtivoBackend.infra.repository.CategoryRepository;
 import com.example.produtivoBackend.infra.repository.SpecificationTask;
 import com.example.produtivoBackend.infra.repository.TaskRepository;
 import com.example.produtivoBackend.infra.repository.UserRepository;
@@ -27,11 +30,14 @@ public class TaskService{
     private TaskRepository taskRepo;
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private CategoryRepository catRepo;
 
     public TaskResponse createTask(TaskRequest taskRequest, Authentication token){
         String email = token.getName();
         Users user = userRepo.findByEmail(email);
-        Task task = taskRepo.save(new Task(user, taskRequest));
+        Category cat = catRepo.findById(taskRequest.categoryId()).orElseThrow(CategoryNotExistException::new);
+        Task task = taskRepo.save(new Task(user, taskRequest, cat));
 
         return new TaskResponse(task);
     }
@@ -40,8 +46,10 @@ public class TaskService{
         return new TaskResponse(taskRepo.findById(idTask).orElseThrow(TaskNotExistOrInvalidException::new));
     }
 
-    public Page<TaskResponse> allTasks(Pageable pageable){
-        return taskRepo.findAll(pageable).map(TaskResponse::new);
+    //Procurar por nome...
+
+    public Page<TaskSelectAllDataDTO> allTasks(Pageable pageable){
+        return taskRepo.findAllWithCategory(pageable);
     }
 
     public void deleteTask(Long id){

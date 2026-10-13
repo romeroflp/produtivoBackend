@@ -3,6 +3,8 @@ package com.example.produtivoBackend.infra.controllers;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskFilter;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskResponse;
+import com.example.produtivoBackend.domain.tasks.DTOs.TaskSelectAllDataDTO;
+import com.example.produtivoBackend.domain.tasks.entity.Task;
 import com.example.produtivoBackend.domain.tasks.services.TaskService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -36,7 +38,7 @@ public class TaskController{
     }
 
     @GetMapping("/allTasks")
-    public ResponseEntity<Page<TaskResponse>> allTasks(Pageable pageable) {
+    public ResponseEntity<Page<TaskSelectAllDataDTO>> allTasks(Pageable pageable) {
         return ResponseEntity.ok(taskService.allTasks(pageable));
     }
 
@@ -46,7 +48,7 @@ public class TaskController{
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/alterTask/{id}")
+    @PatchMapping("/alterTask/{categoryId}")
     public ResponseEntity<TaskResponse> updateTask(@PathVariable long id ,@RequestBody @Valid TaskRequest request){
         return ResponseEntity.ok(taskService.updateTask(id ,request));
     }
