@@ -66,14 +66,14 @@ public class AccountController {
 
 
     //Criar Role de Admin para uso
-    @GetMapping("user/allUsers")
+    @GetMapping("users/allUsers")
     public ResponseEntity<Page<AuthenticationUserResponseDTO>> findAll(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(accountService.findAll(pageable));
 
     }
 
     //Criar Role de Admin para uso
-    @DeleteMapping("user/deleteUser")
+    @DeleteMapping("users/deleteUser")
     public ResponseEntity<Void> deleteUser(Authentication token){
         String email = token.getName();
         accountService.deleteUser(email);
@@ -81,13 +81,13 @@ public class AccountController {
 
     }
 
-    @DeleteMapping("user/deleteUser/{id}")
+    @DeleteMapping("users/deleteUser/{categoryId}")
     public ResponseEntity<Void> deleteUserById(@PathVariable UUID id){
         accountService.deleteUserById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("user/updateName")
+    @PutMapping("users/updateName")
     public ResponseEntity<UserResponseDTO> updateNameUser(String email, @Valid String newName){
         return ResponseEntity.status(HttpStatus.OK).body(accountService.updateNameUser(email, newName));
 

@@ -17,15 +17,15 @@ public class UserService {
 //
 //    public UserResponseDTO updateNameUser(String email,
 //                                          String newName){
-//        Users user = userRepo.findByEmail(email);
+//        Users users = userRepo.findByEmail(email);
 //
 //        if(newName.length() <= 2 || newName.length() > 30 ||
 //                newName.matches("^[A-ZÀ-Úa-zà-ú][A-ZÀ-Úa-zà-ú]*(?:[ '-][A-ZÀ-Úa-zà-ú]+)*$") ||
 //                newName.isBlank()){
 //            throw new InvalidCredentialsException("O nome informado não é permitido. Tente novamente.");
 //        }
-//        user.setName(newName.trim());
-//        return new UserResponseDTO(userRepo.save(user));
+//        users.setName(newName.trim());
+//        return new UserResponseDTO(userRepo.save(users));
 //
 //    }
 //

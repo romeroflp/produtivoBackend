@@ -134,7 +134,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>default-compile</id>
+						<categoryId>default-compile</categoryId>
 						<phase>compile</phase>
 						<goals>
 							<goal>compile</goal>
@@ -149,7 +149,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>default-testCompile</id>
+						<categoryId>default-testCompile</categoryId>
 						<phase>test-compile</phase>
 						<goals>
 							<goal>testCompile</goal>

@@ -3,6 +3,7 @@ package com.example.produtivoBackend.infra.configuration.dataUtil;
 import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.sql.DataSource;
 import java.security.SecureRandom;
@@ -25,5 +26,8 @@ public class Util {
     public SecureRandom instanceSecureRandom(){
         return new SecureRandom();
     }
+
+    @Bean
+    public ObjectMapper instanceMapper(){return new ObjectMapper();}
 
 }
