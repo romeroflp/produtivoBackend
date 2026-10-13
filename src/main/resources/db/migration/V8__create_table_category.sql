@@ -1,0 +1,5 @@
+CREATE TABLE category(
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE
+);
