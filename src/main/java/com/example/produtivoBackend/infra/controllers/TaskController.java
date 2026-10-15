@@ -3,7 +3,10 @@ package com.example.produtivoBackend.infra.controllers;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskFilter;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskResponse;
+import com.example.produtivoBackend.domain.tasks.DTOs.TaskSelectAllDataDTO;
+import com.example.produtivoBackend.domain.tasks.entity.Task;
 import com.example.produtivoBackend.domain.tasks.services.TaskService;
+import com.example.produtivoBackend.domain.users.entities.Users;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +32,20 @@ public class TaskController{
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{idTask}")
-    public ResponseEntity<TaskResponse> searchTask (@PathVariable @Positive Long idTask){
-        return ResponseEntity.ok(taskService.searchTask(idTask));
-
+    @GetMapping("/{identifier}")
+    public ResponseEntity<TaskResponse> searchTask (@PathVariable String identifier){
+        return ResponseEntity.ok(taskService.searchTask(identifier));
     }
 
     @GetMapping("/allTasks")
-    public ResponseEntity<Page<TaskResponse>> allTasks(Pageable pageable) {
+    public ResponseEntity<Page<TaskSelectAllDataDTO>> allTasks(Pageable pageable) {
         return ResponseEntity.ok(taskService.allTasks(pageable));
+    }
+
+    @GetMapping("/myTasks")
+    public ResponseEntity<Page<List<TaskSelectAllDataDTO>>> myTasks(Pageable page, Authentication auth){
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.myTasks(page, auth));
+
     }
 
     @DeleteMapping("/delete/{idTask}")
@@ -46,7 +54,7 @@ public class TaskController{
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/alterTask/{id}")
+    @PatchMapping("/updateTask/{categoryId}")
     public ResponseEntity<TaskResponse> updateTask(@PathVariable long id ,@RequestBody @Valid TaskRequest request){
         return ResponseEntity.ok(taskService.updateTask(id ,request));
     }

@@ -18,7 +18,7 @@ public class SpecificationTask {
 
     public static Specification<Task> hasCategory(CategoryTask categoryTask){
         return (root, query, cb) ->
-            cb.equal(root.get("category"), categoryTask);
+            cb.equal(root.get("id"), categoryTask);
     }
 
     public static Specification<Task> hasStatus(StatusTask statusTask){

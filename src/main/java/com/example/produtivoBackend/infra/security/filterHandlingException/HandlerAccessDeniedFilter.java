@@ -1,0 +1,32 @@
+package com.example.produtivoBackend.infra.security.filterHandlingException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+@Component
+public class HandlerAccessDeniedFilter implements AccessDeniedHandler {
+
+    @Autowired
+    private FilterApiError apiError;
+
+    @Override
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        apiError.write(
+                request,
+                response,
+                HttpStatus.FORBIDDEN,
+                accessDeniedException,
+                "Sem permissão para utilizar esse recurso."
+        );
+    }
+
+
+}

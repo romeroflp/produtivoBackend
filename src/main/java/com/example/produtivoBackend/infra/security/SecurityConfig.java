@@ -1,12 +1,12 @@
 package com.example.produtivoBackend.infra.security;
 
+import com.example.produtivoBackend.infra.security.filterHandlingException.HandlerAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.web.AbstractRequestMatcherRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,7 +26,9 @@ import java.util.List;
 public class SecurityConfig {
 
     @Autowired
-    public SecurityFilter securityFilter;
+    private SecurityFilter securityFilter;
+    @Autowired
+    private HandlerAuthenticationEntryPoint authEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
@@ -36,12 +38,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/user/allUsers").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/allUsers").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/mail/forgotPassword").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/resetPassword/validate").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/resetPassword/confirm").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }

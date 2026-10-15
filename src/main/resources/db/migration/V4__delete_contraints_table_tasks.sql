@@ -1,1 +1,1 @@
-ALTER TABLE tasks DROP CONSTRAINT tasks_pkey;
+ALTER TABLE tasks DROP CONSTRAINT tasks_user_id_fkey;
