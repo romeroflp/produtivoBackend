@@ -2,7 +2,7 @@ package com.example.produtivoBackend.infra.controllers;
 
 import com.example.produtivoBackend.domain.exceptions.handlers.GlobalErrorExceptionsHandlers;
 import com.example.produtivoBackend.domain.exceptions.GlobalErrorResponse;
-import com.example.produtivoBackend.infra.security.exception.ErrorHandlingAuthenticationEntryPointDTO;
+import com.example.produtivoBackend.domain.exceptions.domainExceptions.ErrorHandlingAuthenticationEntryPointDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

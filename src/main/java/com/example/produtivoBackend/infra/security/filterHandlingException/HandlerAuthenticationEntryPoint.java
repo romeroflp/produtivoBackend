@@ -1,10 +1,11 @@
-package com.example.produtivoBackend.infra.security;
+package com.example.produtivoBackend.infra.security.filterHandlingException;
 
-import com.example.produtivoBackend.infra.security.exception.ErrorHandlingAuthenticationEntryPointDTO;
+import com.example.produtivoBackend.domain.exceptions.domainExceptions.ErrorHandlingAuthenticationEntryPointDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -12,28 +13,21 @@ import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class HandlerAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Autowired
-    private ObjectMapper mapper;
+    private FilterApiError apiError;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        ErrorHandlingAuthenticationEntryPointDTO error = new ErrorHandlingAuthenticationEntryPointDTO(
-                HttpServletResponse.SC_UNAUTHORIZED,
-                "Token inválido ou expirado. O usuário deve fazer login novamente.",
-                authException.getMessage(),
-                request.getServletPath()
-        );
-
-        mapper.writeValue(response.getOutputStream(), error);
+        apiError.write(request,
+                       response,
+                       HttpStatus.UNAUTHORIZED,
+                       authException,
+               "Autenticação necessária ou token inválido.");
 
     }
 }

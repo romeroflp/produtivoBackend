@@ -1,4 +1,4 @@
-package com.example.produtivoBackend.infra.security.exception;
+package com.example.produtivoBackend.domain.exceptions.domainExceptions;
 
 import java.time.LocalDateTime;
 

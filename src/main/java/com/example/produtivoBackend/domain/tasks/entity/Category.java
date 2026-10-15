@@ -25,7 +25,14 @@ public class Category {
     @Pattern(regexp = "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", message = "A cor do ícone deve estar no formato hexadecimal.")
     private String colorIcon;
 
-    public Category(String name, Users user, String colorIcon){
+    public Category(String name, String colorIcon, Users user){
+        this.name = name;
+        this.users = user;
+        this.colorIcon = colorIcon;
+    }
+
+    public Category(Long id,String name, String colorIcon, Users user){
+        this.id = id;
         this.name = name;
         this.users = user;
         this.colorIcon = colorIcon;

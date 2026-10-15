@@ -37,6 +37,19 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(catService.createCategories(request, user));
     }
 
-    //Criar Delete e Update...
+    @PatchMapping("/updateCategory")
+    public ResponseEntity<CategoryResponseDTO> updateCategory(@RequestBody CategoryRequestDTO request, Authentication auth){
+        return ResponseEntity.status(HttpStatus.OK).body(catService.updateCategory(request, auth));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id){
+        catService.deleteCategory(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+    }
+
+
+
 
 }

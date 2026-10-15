@@ -10,9 +10,4 @@ public class EmailSendException extends GlobalErrorExceptionsHandlers {
         super(LocalDateTime.now(), HttpStatus.BAD_REQUEST, "Envio de email foi interrompido. Um erro inesperado ocorreu.");
     }
 
-
-
-
-
-
 }

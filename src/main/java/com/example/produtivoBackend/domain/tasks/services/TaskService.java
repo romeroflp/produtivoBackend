@@ -13,6 +13,7 @@ import com.example.produtivoBackend.infra.repository.CategoryRepository;
 import com.example.produtivoBackend.infra.repository.SpecificationTask;
 import com.example.produtivoBackend.infra.repository.TaskRepository;
 import com.example.produtivoBackend.infra.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
+@Slf4j
 @Service
 public class TaskService{
 
@@ -42,14 +45,23 @@ public class TaskService{
         return new TaskResponse(task);
     }
 
-    public TaskResponse searchTask(Long idTask){
-        return new TaskResponse(taskRepo.findById(idTask).orElseThrow(TaskNotExistOrInvalidException::new));
+    public TaskResponse searchTask(String identifier){
+        if(identifier.matches("\\d+")){
+            Long id = Long.parseLong(identifier);
+            return new TaskResponse(taskRepo.findById(id).orElseThrow(TaskNotExistOrInvalidException::new));
+        }
+        return new TaskResponse(taskRepo.findByTitleContaining(identifier).orElseThrow(TaskNotExistOrInvalidException::new));
     }
 
-    //Procurar por nome...
 
     public Page<TaskSelectAllDataDTO> allTasks(Pageable pageable){
         return taskRepo.findAllWithCategory(pageable);
+    }
+
+    public Page<List<TaskSelectAllDataDTO>> myTasks(Pageable page, Authentication auth){
+        UUID userId = userRepo.findByEmail(auth.getName()).getId();
+        return taskRepo.findAllByUsers(page, userId);
+
     }
 
     public void deleteTask(Long id){

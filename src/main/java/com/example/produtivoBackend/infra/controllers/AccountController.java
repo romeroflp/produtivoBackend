@@ -72,7 +72,6 @@ public class AccountController {
 
     }
 
-    //Criar Role de Admin para uso
     @DeleteMapping("users/deleteUser")
     public ResponseEntity<Void> deleteUser(Authentication token){
         String email = token.getName();
