@@ -4,6 +4,7 @@ import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
 import com.example.produtivoBackend.domain.tasks.enums.StatusTask;
 import com.example.produtivoBackend.domain.users.entities.Users;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -44,7 +45,8 @@ public class Task {
 
     private Boolean recurrent;
 
-    public Task(Users users, String title, String description, Category category, StatusTask statusTask, LocalDateTime expirationDate, Boolean recurrent) {
+    public Task(Long id,Users users, String title, String description, Category category, StatusTask statusTask, LocalDateTime expirationDate, Boolean recurrent) {
+        this.id = id;
         this.users = users;
         this.title = title;
         this.description = description;
@@ -64,6 +66,30 @@ public class Task {
         this.createdIn = LocalDateTime.now();
         this.expirationDate = request.expirationDate();
         this.recurrent = request.recurrent();
+    }
+
+    public Task(Users users, String title, String description, Category category, StatusTask statusTask, LocalDateTime expirationDate, Boolean recurrent) {
+        this.users = users;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.statusTask = statusTask;
+        this.createdIn = LocalDateTime.now();
+        this.expirationDate = expirationDate;
+        this.recurrent = recurrent;
+    }
+
+    public Task from(TaskRequest request, Users user,Category category ){
+        return new Task(request.id(),
+                user,
+                request.title(),
+                request.description(),
+                category,
+                request.statusTask(),
+                request.expirationDate(),
+                request.recurrent()
+
+        );
     }
 
 }

@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 public class TaskNotExistOrInvalidException extends GlobalErrorExceptionsHandlers {
     public TaskNotExistOrInvalidException() {
 
-        super(LocalDateTime.now(), HttpStatus.NOT_FOUND, "Essa tarefa não existe. O valor inserido é inválido.");
+        super(LocalDateTime.now(), HttpStatus.NOT_FOUND, "Nenhum resultado encontrado. Essa tarefa não existe ou é inválida.");
     }
 }
