@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -84,14 +85,12 @@ public class AccountService implements UserDetailsService {
 
     public boolean resetTokenIsUsedOrExpired(String tokenResponse){
         ResetToken token = tokenRepo.findByToken(UUID.fromString(tokenResponse));
-        log.error(String.valueOf(token.getToken()));
         if(token.isUsed() || token.getExpiredAt().isBefore(Instant.now())){
             tokenRepo.delete(token);
             throw new ExpiredOrInvalidTokenException("Token para reset de senha expirado ou inválido");
         }
         return false;
     }
-
 
     public boolean validatingConfirmationCodeForResetPassword(RequestResetPasswordValidateCode codeProvidedByUser){
         this.isCorrectCode = codeProvidedByUser.codeProvideByUser().equals(this.codeConfirmReset);
@@ -130,9 +129,9 @@ public class AccountService implements UserDetailsService {
 
     }
 
-    public UserResponseDTO updateNameUser(String email,
+    public UserResponseDTO updateNameUser(Authentication email,
                                           String newName){
-        Users user = userRepo.findByEmail(email);
+        Users user = userRepo.findByEmail(email.getName());
 
         if(newName.length() <= 2 || newName.length() > 30 ||
            newName.matches("^[A-ZÀ-Úa-zà-ú][A-ZÀ-Úa-zà-ú]*(?:[ '-][A-ZÀ-Úa-zà-ú]+)*$") ||

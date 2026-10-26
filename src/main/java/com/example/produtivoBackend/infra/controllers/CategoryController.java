@@ -21,16 +21,16 @@ public class CategoryController {
     private CategoryService catService;
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponseDTO>> findAll(){
-        return ResponseEntity.status(HttpStatus.OK).body(catService.findAll());
+    public ResponseEntity<List<CategoryResponseDTO>> listCategories(Authentication auth){
+        return ResponseEntity.status(HttpStatus.OK).body(catService.listCategories(auth));
     }
 
-    @GetMapping("/myCategories")
-    public ResponseEntity<List<CategoryResponseDTO>> listMyCategories(Authentication auth){
-        String email = auth.getName();
-        return ResponseEntity.status(HttpStatus.OK).body(catService.listMyCategories(email));
-
-    }
+//    @GetMapping("/myCategories")
+//    public ResponseEntity<List<CategoryResponseDTO>> listMyCategories(Authentication auth){
+//        String email = auth.getName();
+//        return ResponseEntity.status(HttpStatus.OK).body(catService.listMyCategories(email));
+//
+//    }
 
     @PostMapping("/save")
     public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequestDTO request, Authentication user){
@@ -42,9 +42,9 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(catService.updateCategory(request, auth));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id){
-        catService.deleteCategory(id);
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id, Authentication auth){
+        catService.deleteCategory(id, auth);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }

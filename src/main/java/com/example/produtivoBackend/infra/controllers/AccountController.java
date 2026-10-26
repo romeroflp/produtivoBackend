@@ -87,7 +87,7 @@ public class AccountController {
     }
 
     @PutMapping("users/updateName")
-    public ResponseEntity<UserResponseDTO> updateNameUser(String email, @Valid String newName){
+    public ResponseEntity<UserResponseDTO> updateNameUser(Authentication email, @Valid String newName){
         return ResponseEntity.status(HttpStatus.OK).body(accountService.updateNameUser(email, newName));
 
     }

@@ -9,4 +9,9 @@ public class SimpleErrorMessageException extends GlobalErrorExceptionsHandlers {
     public SimpleErrorMessageException(String message) {
         super(LocalDateTime.now(), HttpStatus.BAD_REQUEST ,message);
     }
+
+    public SimpleErrorMessageException(String message, HttpStatus status){
+        super(LocalDateTime.now(), status, message);
+    }
+
 }

@@ -52,7 +52,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsSource(){
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://localhost:5173"));
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(List.of("GET","POST","DELETE","PATCH", "PUT", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-type")); // Permite que outra origem envie requisições
 

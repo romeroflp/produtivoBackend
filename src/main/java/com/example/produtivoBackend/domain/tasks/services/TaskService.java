@@ -1,6 +1,6 @@
 package com.example.produtivoBackend.domain.tasks.services;
 
-import com.example.produtivoBackend.domain.exceptions.domainExceptions.CategoryNotExistException;
+import com.example.produtivoBackend.domain.exceptions.domainExceptions.InvalidCategoryOrNotExistException;
 import com.example.produtivoBackend.domain.exceptions.domainExceptions.TaskNotExistOrInvalidException;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskFilter;
 import com.example.produtivoBackend.domain.tasks.DTOs.TaskRequest;
@@ -10,11 +10,10 @@ import com.example.produtivoBackend.domain.tasks.entity.Category;
 import com.example.produtivoBackend.domain.tasks.entity.Task;
 import com.example.produtivoBackend.domain.users.entities.Users;
 import com.example.produtivoBackend.infra.repository.CategoryRepository;
-import com.example.produtivoBackend.infra.repository.SpecificationTask;
+import com.example.produtivoBackend.infra.repository.SpecificationTaskRepository;
 import com.example.produtivoBackend.infra.repository.TaskRepository;
 import com.example.produtivoBackend.infra.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,24 +38,29 @@ public class TaskService{
     public TaskResponse createTask(TaskRequest taskRequest, Authentication token){
         String email = token.getName();
         Users user = userRepo.findByEmail(email);
-        Category cat = catRepo.findById(taskRequest.categoryId()).orElseThrow(CategoryNotExistException::new);
+        Category cat = catRepo.findById(taskRequest.categoryId()).orElseThrow(InvalidCategoryOrNotExistException::new);
+        if(cat.getUsers().getId() != null && cat.getUsers().getId() != user.getId()){
+            throw new InvalidCategoryOrNotExistException("O usuário não possui a categoria definida.");
+        }
         Task task = taskRepo.save(new Task(user, taskRequest, cat));
 
         return new TaskResponse(task);
     }
 
-    public TaskResponse searchTask(String identifier){
-        if(identifier.matches("\\d+")){
-            Long id = Long.parseLong(identifier);
-            return new TaskResponse(taskRepo.findById(id).orElseThrow(TaskNotExistOrInvalidException::new));
-        }
-        return new TaskResponse(taskRepo.findByTitleContaining(identifier).orElseThrow(TaskNotExistOrInvalidException::new));
+    public TaskResponse searchTaskById(Long id){
+        return new TaskResponse(taskRepo.findById(id).orElseThrow(TaskNotExistOrInvalidException::new));
+
     }
 
+    public List<TaskResponse> searchTaskByTitle(String identifier, Authentication auth){
 
-    public Page<TaskSelectAllDataDTO> allTasks(Pageable pageable){
-        return taskRepo.findAllWithCategory(pageable);
+        UUID userId = userRepo.findByEmail(auth.getName()).getId();
+        List<Task> tasks = taskRepo.findByTitleContaining(identifier, userId).orElseThrow(TaskNotExistOrInvalidException::new);
+
+        return tasks.stream().map(TaskResponse::new).toList();
     }
+
+// Separar e criar um redirecionador dependendo se e um numero ou contem letras. Mudar o regex para verificar se tem alguma letra
 
     public Page<List<TaskSelectAllDataDTO>> myTasks(Pageable page, Authentication auth){
         UUID userId = userRepo.findByEmail(auth.getName()).getId();
@@ -64,57 +68,71 @@ public class TaskService{
 
     }
 
-    public void deleteTask(Long id){
+    public void deleteTask(Long id, Authentication auth){
+        Task task = taskRepo.findById(id).orElseThrow(TaskNotExistOrInvalidException::new);
+        if(!task.getUsers().getEmail().equals(auth.getName())){
+            throw new TaskNotExistOrInvalidException();
+        }
         taskRepo.deleteById(id);
     }
 
-    public TaskResponse updateTask(long id,TaskRequest request){
+    public TaskResponse updateTask(TaskRequest request, Authentication auth){
 
-        Task task = taskRepo.findById(id)
+        Task task = taskRepo.findById(request.id())
                 .orElseThrow(TaskNotExistOrInvalidException::new);
+        Users user = userRepo.findByEmail(auth.getName());
+        Category cat = catRepo.findById(request.categoryId()).orElseThrow(InvalidCategoryOrNotExistException::new);
 
-        BeanUtils.copyProperties(request, task);
-        return new TaskResponse(taskRepo.save(task));
+        if(!user.getId().equals(task.getUsers().getId())){
+            throw new TaskNotExistOrInvalidException();
+        }
+
+        return new TaskResponse(taskRepo.save(new Task(task.getId(),
+                user,
+                request.title(),
+                request.description(),
+                cat,
+                request.statusTask(),
+                request.expirationDate(),
+                request.recurrent()
+        )));
 
     }
 
-
-    public List<TaskResponse> filterTask(TaskFilter filter){
+    public List<TaskResponse> filterTask(TaskFilter filter, Authentication auth){
         Specification<Task> responseSpecification = Specification.unrestricted();
 
         if(filter.title() != null){
-            responseSpecification = responseSpecification.and(SpecificationTask.hasTitle(filter.title()));
-        }
-
-        if(filter.category() != null){
-            responseSpecification = responseSpecification.and(SpecificationTask.hasCategory(filter.category()));
+            responseSpecification = responseSpecification.and(SpecificationTaskRepository.hasTitle(filter.title()));
         }
 
         if(filter.statusTask() != null){
-            responseSpecification = responseSpecification.and(SpecificationTask.hasStatus(filter.statusTask()));
+            responseSpecification = responseSpecification.and(SpecificationTaskRepository.hasStatus(filter.statusTask()));
         }
 
         if(filter.recurrent() != null){
-            responseSpecification = responseSpecification.and(SpecificationTask.hasRecurrent(filter.recurrent()));
+            responseSpecification = responseSpecification.and(SpecificationTaskRepository.hasRecurrent(filter.recurrent()));
         }
 
-        if(filter.expirationDate() != null && filter.expirationTime() == null){
-            responseSpecification = responseSpecification.and(SpecificationTask.hasTaskInDate(filter.expirationDate()));
+        if(filter.startDate() != null && filter.endDate() == null){
+            responseSpecification = responseSpecification.and(SpecificationTaskRepository.hasTaskOnDate(filter.startDate()));
         }
 
-        if(filter.expirationTime() != null && filter.expirationDate() != null){
-            responseSpecification = responseSpecification.and(SpecificationTask.hasTaskInDateTime(
-                    filter.expirationDate(), filter.expirationTime()));
+        if(filter.startDate() != null && filter.endDate() != null){
+            responseSpecification = responseSpecification.and(SpecificationTaskRepository.hasTaskOnPeriod(filter.startDate(), filter.endDate()));
         }
 
         //Refatorar tudo isso pra um Builder
 
+        UUID userId = userRepo.findByEmail(auth.getName()).getId();
 
         List<Task> listTask = taskRepo.findAll(responseSpecification);
-        return listTask.stream().map(TaskResponse::new).toList();
+        return listTask.stream().filter(t -> t.getUsers().getId() == userId)
+                .map(TaskResponse::new).toList();
+
 
     }
-    
+
 
 
 }
